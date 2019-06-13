@@ -1,5 +1,5 @@
 ---
-title: "Génération de cartes en ligne personalisées: cas des ZNT en viticulture"
+title: "Génération de cartes en ligne personnalisées : cas des ZNT en viticulture"
 author: "Romain Lacroix"
 date: '14 juin 2019'
 output:
@@ -63,13 +63,18 @@ leaflet() %>% addTiles() %>%     addTiles(urlTemplate = mapbox_AOC,'INAO', group
 
 ---
 
+background-image: url(https://i.ibb.co/JBc3FPG/znt.png)
+background-size: 666px
+background-position: 50% 45%
+
 # Le problème : Zones Non Traitées (ZNT)
 
 Loi du 4 mai 2017
 
 <center>
 
-![](http://draaf.nouvelle-aquitaine.agriculture.gouv.fr/IMG/jpg/znt_cle87b49f.jpg)
+<div style="margin-bottom:280px;">
+</div>
 
 **Points d'eau**
 
@@ -79,7 +84,7 @@ Loi du 4 mai 2017
 
 </center>
 .footnote[
-© DRAAF Nouvelle-Aquitaine
+© Reinach
 ]
 
 ---
@@ -136,7 +141,7 @@ background-position: 50% 57%
 
 
 .pull-right[
-## ZNT Pers. Vuln.
+## ZNT Pers. Vulnérables
 - Enfants + Malades + Handicapés + Pers. âgées
 
 - Pas d'exhaustivité des lieux concernés
@@ -158,7 +163,7 @@ Production automatisée de cartes interactives personnalisées pour chaque explo
 
 --
 
-1. Établir une cartographie des ZNT Pers. Vuln. pour les Côtes du Rhône à l'aide d'**OpenStreetMap**
+1. Établir une cartographie des ZNT Pers. Vuln. pour les Côtes-du-Rhône à l'aide d'**OpenStreetMap**
 
 --
 
@@ -228,7 +233,7 @@ Pas de liste exhaustive, il a donc fallu en faire une pertinente à l'aide des c
         
 ---
 
-# ZNT Pers. Vuln. (extraction)
+# ZNT Pers. Vulnéralbes (extraction)
 
 ```{r eval=FALSE}
 
@@ -260,7 +265,7 @@ znt_school <- subset(cadastre,
 ---
 class: inverse, middle, center
 background-image: url(https://i.ibb.co/80zCcSC/Screenshot-8.png)
-background-size: contain
+background-size: cover
 
 
 ---
@@ -294,7 +299,7 @@ leaflet() %>% addTiles() %>%     addTiles(urlTemplate = mapbox_AOC, group = "AOC
 ---
 
 background-image: url(https://i.ibb.co/wM2M14j/cvi.png)
-background-size: 480px
+background-size: 470px
 background-position: 50% 90%
 # Injection des données des viticulteurs
 
@@ -307,7 +312,7 @@ background-position: 50% 90%
 # Fonctionnalités
 
 .pull-left[
-- Géolocalisation (correcte)
+- Géolocalisation
 
 - Mesures (surfaces / distance)
 
@@ -338,16 +343,16 @@ Packages <- c("tidyverse", "sf", "leaflet", "htmlwidgets",
 [...]
 
  m <- leaflet(options = leafletOptions(zoomControl = TRUE)) %>%
-      addTiles(Satellite, group = "Satellite") %>%
-      addTiles(LabelsOsm, group = "Satellite")%>%
-      addTiles(CadastreIGN, group = "Cadastre") %>%
-      addTiles(ZNT, group = "ZNT") %>%
-      addTiles(AOC, "INAO", group = "AOC") %>%
-      addPolygons(data = geo_cvi, 
-                  popup = label, group = "Parcelles") %>%
-      addScaleBar(position = "bottomleft") %>%
-      addLayersControl() %>%
-      leafem::addHomeButton(extent(geo_cvi), 
+          addTiles(Satellite, group = "Satellite") %>%
+          addTiles(LabelsOsm, group = "Satellite")%>%
+          addTiles(CadastreIGN, group = "Cadastre") %>%
+          addTiles(ZNT, group = "ZNT") %>%
+          addTiles(AOC, "INAO", group = "AOC") %>%
+          addPolygons(data = geo_cvi, 
+                      popup = label, group = "Parcelles") %>%
+          addScaleBar(position = "bottomleft") %>%
+          addLayersControl() %>%
+          leafem::addHomeButton(extent(geo_cvi), 
                             "Zoom initial") %>%
 
 
@@ -382,7 +387,7 @@ Packages <- c("tidyverse", "sf", "leaflet", "htmlwidgets",
 
 
 # Aperçu de la sortie
-![](https://i.ibb.co/kSFLMzj/Screenshot-9.png)
+![](https://i.ibb.co/x7h3Dj8/sortie.png)
 
 
 ---
