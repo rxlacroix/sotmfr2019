@@ -1,0 +1,422 @@
+---
+title: "Génération de cartes en ligne personalisées: cas des ZNT en viticulture"
+author: "Romain Lacroix"
+date: '14 juin 2019'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class: center, middle
+
+
+# Slides disponibles sur
+
+## https://rxlacroix.github.io/sotmfr2019
+
+
+---
+
+# Côtes-du-Rhône
+
+.pull-left[
+
+
+- 130 000 ha de terroirs en AOC
+
+
+
+
+- 171 communes de Vienne à Avignon, 6 départements, 3 régions
+
+
+
+
+- 5 500 exploitations, 20 000 emplois directs
+
+
+]
+
+.pull-right[
+
+```{r out.width='100%', fig.height=7, eval=require('leaflet'), echo =FALSE, message=FALSE, warning=FALSE}
+library(leaflet)
+library(sf)
+mapbox_AOC <- 'https://api.mapbox.com/styles/v1/sgvrcdr/cjwq5gik57u0s1cmg6n81lrcl/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2d2cmNkciIsImEiOiJjanBkdnplODIwMnlkM2tsZzVzdGRiMHF1In0.-b82aCWZynf5W-h2vtQXxg'
+  
+leaflet() %>% addTiles() %>%     addTiles(urlTemplate = mapbox_AOC,'INAO', group = "AOC", layerId = "AOC")%>%
+  setView(5, 44.7, zoom = 8)
+
+```
+
+]
+
+
+---
+
+# Le problème : Zones Non Traitées (ZNT)
+
+Loi du 4 mai 2017
+
+<center>
+
+![](http://draaf.nouvelle-aquitaine.agriculture.gouv.fr/IMG/jpg/znt_cle87b49f.jpg)
+
+**Points d'eau**
+
+** \+ **
+
+**Établissements accueillant des personnes vulnérables**
+
+</center>
+.footnote[
+© DRAAF Nouvelle-Aquitaine
+]
+
+---
+<div style="margin-bottom:10px;">
+</div>
+.pull-left[
+- ** [https://ephy.anses.fr/](https://ephy.anses.fr/) **
+
+
+- ** ZNT : 5, 20 ou 50m pour la viticulture **
+]
+.pull-right[
+![](https://www.agro.basf.fr/Pictures/pictures_fr/produits/bidons/bidon_wing_p_1540x866.jpg)
+]
+<div style="margin-bottom:0px;">
+</div>
+
+### Exemple : Glyphosate (Rival Pro)
+
+![](https://i.ibb.co/MSjR0c4/Screenshot-from-2019-06-10-13-12-43.png)
+
+---
+
+background-image: url(https://i.ibb.co/VDypZhm/zntlaudunddt.png)
+background-size: 666px
+background-position: 50% 57%
+
+# Point de départ 
+
+.footnote[©DDT 30]
+
+---
+
+# Règlementation
+
+.pull-left[
+## ZNT Eau
+- Le cours d'eau doit être classé "ZNT"
+
+
+- Le cours d'eau doit être classé "cours d'eau"
+
+
+- +/- Négociation départementale
+
+
+- Pas de données fournies simplement
+
+
+- Pas de lits mineurs indiqués
+
+
+]
+
+
+.pull-right[
+## ZNT Pers. Vuln.
+- Enfants + Malades + Handicapés + Pers. âgées
+
+- Pas d'exhaustivité des lieux concernés
+
+]
+
+---
+
+# Une solution
+
+Stratégie du syndicat des CDR de conversion de ses exploitations vers des modes de production plus respectueux des environnements. 
+
+
+Production automatisée de cartes interactives personnalisées pour chaque exploitation viticole leur permettant de situer leurs parcelles au regard des différentes ZNT :
+
+--
+
+1. Retravailler les ZNT eau pour avoir une précision et une compréhension acceptable à l'échelle 1:1
+
+--
+
+1. Établir une cartographie des ZNT Pers. Vuln. pour les Côtes du Rhône à l'aide d'**OpenStreetMap**
+
+--
+
+1. Intégrer ces éléments dans un processus automatisé de cartographie interactive & personnalisée
+
+---
+
+
+# ZNT Eau
+
+En théorie : on considère points d'eau / cours d'eau ZNT tous les éléments hydrographiques présents sur les cartes topo IGN 1:25000 (bleu)
+
+1. Utilisation de la BD Topo Hydro (IGN)
+
+    - SURFACES_EAU : polygones
+
+    - TRONCONS_EAU : lignes
+
+1. Pour les départements avec négociation des cours d'eau : retrait des cours d'eau non-ZNT
+
+1. Pas de lit mineur : tampon de 50 cm pour chaque élément
+
+1. Tampons de 5m, 20m et 50m : fusions, nettoyages, conversion en tuiles (Mapbox)
+
+
+
+
+---
+
+# ZNT Personnes Vulnérables = 20m autour des limites 
+
+Pas de liste exhaustive, il a donc fallu en faire une pertinente à l'aide des clés/valeurs d'objets OSM:
+.pull-left[
+- Enfants :
+
+        
+        "amenity" = 'school'
+        
+        "amenity" = 'kindergarten'
+        
+        "amenity" = 'college'
+        
+
+- Santé :
+
+        
+        "amenity" = 'clinic'
+        
+        "amenity" = 'hospital'
+        
+        "amenity" = 'nursing_home'
+        
+        "amenity" = 'social_facility'
+]
+
+.pull-right[
+- Loisirs / Sports :
+
+        "leisure" = 'playground'
+        "leisure" = 'pitch'
+        "leisure" = 'picnic_table'
+        "leisure" = 'park'
+        "leisure" = 'sports_centre'
+        "leisure" = 'garden'
+]
+        
+        
+---
+
+# ZNT Pers. Vuln. (extraction)
+
+```{r eval=FALSE}
+
+library(osmdata)
+library(sf)
+library(tidyverse)
+
+# cadastre Etalab
+cadastre <- st_read("cadastre.gpkg") 
+# zone d'intérêt
+cdr <- st_read("communes_cdr.gpkg")
+# requête OSM
+school <- st_bbox(cdr) %>% 
+  opq() %>% 
+  add_osm_feature("amenity", "school") %>% 
+  osmdata_sf() %$% 
+  osm_points %>%
+  st_intersection(cadastre)
+# jointure avec le cadastre et tampon 20m
+znt_school <- subset(cadastre, 
+               cadastre$code_complet %in% school$code_complet) %>%
+  st_buffer(20)%>%
+  st_union()
+
+
+```
+
+\+ Nettoyage \+ Conversion en tuiles (Mapbox)
+---
+class: inverse, middle, center
+background-image: url(https://i.ibb.co/80zCcSC/Screenshot-8.png)
+background-size: contain
+
+
+---
+# Sortie ZNT
+
+```{r out.width='100%', fig.height=7, eval=require('leaflet'), echo =FALSE, message=FALSE, warning=FALSE}
+library(leaflet)
+library(sf)
+mapbox_AOC <- 'https://api.mapbox.com/styles/v1/romainlacroix/cjuatc1zu1pgp1fnt5ayvjjpr/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoicm9tYWlubGFjcm9peCIsImEiOiJjaWY2bGFkdW4wMDY5c3VrcDgyanZib3diIn0.9QZEwFfG1GLHmtJw-oeoQA'
+  
+leaflet() %>% addTiles() %>%     addTiles(urlTemplate = mapbox_AOC, group = "AOC", layerId = "AOC")%>%  addLegend("bottomright", 
+            colors =c("#BD0026",  "#F03B20", "#FEB24C"),
+            labels= c("5m", "20m","50m"),
+            group = "ZNT",
+            title= "ZNT Cours eau",
+            opacity = 0.8)%>%
+  addLegend("bottomright", 
+            group = "ZNT",
+            colors =c("yellow"),
+            labels= c("20m"),
+            title= "ZNT Pers. Vuln.",
+            opacity = 0.8)%>%
+
+  setView(4.76, 43.95, zoom = 13)
+
+```
+
+
+
+
+---
+
+background-image: url(https://i.ibb.co/wM2M14j/cvi.png)
+background-size: 480px
+background-position: 50% 90%
+# Injection des données des viticulteurs
+
+- Casiers Viticoles Informatisés (Douanes) : parcellaire planté de chaque exploitation viticole + Jointure cadastrale
+
+- Une exploitation, un identifiant, une couche de polygones (parcellaire)
+
+
+---
+# Fonctionnalités
+
+.pull-left[
+- Géolocalisation (correcte)
+
+- Mesures (surfaces / distance)
+
+- Carto du cadastre
+
+- Carto des délimitations des aires AOC
+
+- Vue satellite + couche labels OSM 
+
+]
+
+.pull-right[
+![](https://i.ibb.co/MkHKj8n/mix2.png)
+]
+
+![](https://i.ibb.co/HFc3Tkn/mix1.png)
+
+---
+ 
+# Aperçu du script R
+
+```{r eval=FALSE}
+
+
+Packages <- c("tidyverse", "sf", "leaflet", "htmlwidgets",
+              "webshot","htmltools","leafem","leaflet.extras")
+
+[...]
+
+ m <- leaflet(options = leafletOptions(zoomControl = TRUE)) %>%
+      addTiles(Satellite, group = "Satellite") %>%
+      addTiles(LabelsOsm, group = "Satellite")%>%
+      addTiles(CadastreIGN, group = "Cadastre") %>%
+      addTiles(ZNT, group = "ZNT") %>%
+      addTiles(AOC, "INAO", group = "AOC") %>%
+      addPolygons(data = geo_cvi, 
+                  popup = label, group = "Parcelles") %>%
+      addScaleBar(position = "bottomleft") %>%
+      addLayersControl() %>%
+      leafem::addHomeButton(extent(geo_cvi), 
+                            "Zoom initial") %>%
+
+
+```
+
+
+---
+
+# Aperçu du script R
+
+```{r eval=FALSE}
+
+...
+%>%
+      addMeasure(
+        position = "topright",
+        primaryLengthUnit = "meters",
+        primaryAreaUnit = "hectares",
+        localization = "fr",
+      ) %>%
+      addControlGPS()%>%
+      activateGPS()
+
+    
+    saveWidget(m, file = paste0(CVIt, ".html"), 
+               title = paste0("Carto-", CVIt), 
+               selfcontained = TRUE) #<<
+
+```
+
+---
+
+
+# Aperçu de la sortie
+![](https://i.ibb.co/kSFLMzj/Screenshot-9.png)
+
+
+---
+background-image: url(https://i.ibb.co/ZVMyymw/espaceperso.png)
+background-size: 100%
+background-position: 50% 90%
+
+# Livraison aux exploitations viticoles
+
+- Espace perso du syndicat : en téléchargement 
+
+- ~800 ko léger, partageable, *responsive* (téléphones)
+
+
+
+
+
+---
+# Suites
+
+- Quantification des surfaces et des opérateurs impactés
+
+![](https://i.ibb.co/MGCSSpf/zntstat.png)
+
+- Ajout de nouvelles couches : Zone de traitement flavescence dorée, Météo, etc.
+
+---
+class: center, middle
+background-image: url(https://www.syndicat-cotesdurhone.com/static/img/logo_scrv.jpg)
+background-size: 200px
+background-position: 50% 90%
+
+
+# Merci pour votre attention !
+
+Slides .Rmd créées avec le paquet R [**xaringan**](https://github.com/yihui/xaringan).
+
