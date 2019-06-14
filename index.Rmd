@@ -233,7 +233,7 @@ Pas de liste exhaustive, il a donc fallu en faire une pertinente à l'aide des c
         
 ---
 
-# ZNT Pers. Vulnéralbes (extraction)
+# ZNT Pers. Vulnérables (extraction)
 
 ```{r eval=FALSE}
 
